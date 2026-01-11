@@ -33,8 +33,12 @@ services:
     container_name: mariadb
     build: ./requirements/mariadb
     image: mariadb:rhamini
-    env_file:
-      - .env
+    # IMPORTANT : on ne charge plus env_file ici
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mariadb:/var/lib/mysql
     networks:
@@ -43,18 +47,7 @@ services:
 
 volumes:
   wordpress:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/rhamini/data/wordpress
-
   mariadb:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/rhamini/data/mariadb
 
 networks:
   inception:

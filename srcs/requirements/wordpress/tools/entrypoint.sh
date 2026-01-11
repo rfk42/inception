@@ -2,9 +2,11 @@
 set -e
 
 echo "Waiting for MariaDB..."
-until mysqladmin ping -h"$MYSQL_HOST" --silent; do
+until mysql --protocol=tcp -h"$MYSQL_HOST" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" \
+  -e "SELECT 1" >/dev/null 2>&1; do
   sleep 1
 done
+echo "MariaDB is up!"
 
 cd /var/www/wordpress
 

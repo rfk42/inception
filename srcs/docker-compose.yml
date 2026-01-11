@@ -3,15 +3,58 @@ version: "3.8"
 services:
   nginx:
     container_name: nginx
-    build:
-      context: ./requirements/nginx
-      dockerfile: Dockerfile
+    build: ./requirements/nginx
     image: nginx:rhamini
     ports:
       - "443:443"
+    volumes:
+      - wordpress:/var/www/wordpress:ro
+    depends_on:
+      - wordpress
     networks:
       - inception
     restart: always
+
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    image: wordpress:rhamini
+    env_file:
+      - .env
+    volumes:
+      - wordpress:/var/www/wordpress
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    restart: always
+
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    image: mariadb:rhamini
+    env_file:
+      - .env
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - inception
+    restart: always
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/rhamini/data/wordpress
+
+  mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/rhamini/data/mariadb
 
 networks:
   inception:

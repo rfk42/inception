@@ -6,7 +6,6 @@ SOCKET="/run/mysqld/mysqld.sock"
 FLAG="/var/lib/mysql/.inception_initialized"
 
 if [ ! -f "$FLAG" ]; then
-  # Initialise les tables système si besoin
   if [ ! -d "/var/lib/mysql/mysql" ]; then
     mysql_install_db --user=mysql --datadir=/var/lib/mysql
   fi
@@ -28,6 +27,9 @@ EOF
   touch "$FLAG"
   mysqladmin --protocol=socket --socket="$SOCKET" -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
 fi
+
+chown -R mysql:mysql /var/lib/mysql
+chmod -R 750 /var/lib/mysql
 
 exec mysqld --user=mysql --bind-address=0.0.0.0
 

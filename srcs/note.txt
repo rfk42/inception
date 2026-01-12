@@ -1,2 +1,0 @@
-docker system prune -a --volumes
-docker volume rm srcs_mariadb srcs_wordpress
